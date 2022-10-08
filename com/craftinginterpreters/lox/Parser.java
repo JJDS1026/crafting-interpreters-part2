@@ -251,8 +251,8 @@ class Parser {
       Expr right = unary();
       expr = new Expr.Binary(expr, operator, right);
     }
-    //return expr;
-    return call();
+    return expr;
+    //return call();
   }
 
   private Expr finishCall(Expr callee) {
@@ -292,8 +292,8 @@ class Parser {
       Expr right = unary();
       return new Expr.Unary(operator, right);
     }
-
-    return primary();
+    //return primary();
+    return call();
   }
 
   private Expr primary() {
