@@ -240,8 +240,9 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
   @Override
   public Void visitExpressionStmt(Stmt.Expression stmt) {
-    evaluate(stmt.expression);
-    return null;
+    Object value = null;
+    value = evaluate(stmt.expression); 
+    throw new Return(value);
   }
 
   @Override

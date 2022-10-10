@@ -42,7 +42,12 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void>
     @Override
     public Void visitExpressionStmt(Stmt.Expression stmt)
     {
-        resolve(stmt.expression);
+        if(currentFunction == FunctionType.NONE)
+        {
+            Lox.error();
+        } else {
+            resolve(stmt.expression);
+        }
         return null;
     }
 
