@@ -245,6 +245,11 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     throw new Return(value);
   }
 
+  public Void visitClauseExpressionStmt(Stmt.ClauseExpression stmt) {
+    evaluate(stmt.expression);
+    return null;
+  }
+
   @Override
   public Void visitFunctionStmt(Stmt.Function stmt) {
     LoxFunction function = new LoxFunction(stmt, environment);

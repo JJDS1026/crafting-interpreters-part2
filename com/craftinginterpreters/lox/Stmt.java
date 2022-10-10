@@ -12,6 +12,7 @@ abstract class Stmt {
     R visitReturnStmt(Return stmt);
     R visitVarStmt(Var stmt);
     R visitWhileStmt(While stmt);
+    R visitClauseExpressionStmt(ClauseExpression stmt);
   }
   static class Block extends Stmt {
     Block(List<Stmt> statements) {
@@ -37,6 +38,20 @@ abstract class Stmt {
 
     final Expr expression;
   }
+
+  static class ClauseExpression extends Stmt {
+    ClauseExpression(Expr expression) {
+      this.expression = expression;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitClauseExpressionStmt(this);
+    }
+
+    final Expr expression;
+  }
+
   static class Function extends Stmt {
     Function(Token name, List<Token> params, List<Stmt> body) {
       this.name = name;

@@ -58,7 +58,7 @@ class Parser {
     } else if (match(VAR)) {
       initializer = varDeclaration();
     } else {
-      initializer = expressionStatement();
+      initializer = clauseExpressionStatement();
     }
 
     Expr condition = null;
@@ -76,7 +76,7 @@ class Parser {
     Stmt body = statement();
     if (increment != null) {
       body = new Stmt.Block(
-          Arrays.asList(body, new Stmt.Expression(increment))
+          Arrays.asList(body, new Stmt.ClauseExpression(increment))
       );
     }
     if (condition == null) condition = new Expr.Literal(true);
@@ -143,6 +143,12 @@ class Parser {
     Expr expr = expression();
     consume(SEMICOLON, "Expect ';' after expression.");
     return new Stmt.Expression(expr);
+  }
+
+  private Stmt clauseExpressionStatement() {
+    Expr expr = expression();
+    consume(SEMICOLON, "Expect';' after expression.");
+    return new Stmt.ClauseExpression(expr);
   }
 
   private Stmt.Function function(String kind) {
