@@ -32,6 +32,7 @@ class Parser {
     try {
       if (match(FUN)) return function("function");
       if (match(VAR)) return varDeclaration();
+      if (peek().type == IDENTIFIER && doublePeek().type == EQUAL) return clauseExpressionStatement();
       return statement();
     } catch (ParseError error) {
       synchronize();
@@ -370,6 +371,19 @@ class Parser {
   private Token peek() {
     return tokens.get(current);
   }
+
+  private Token doublePeek() {
+    try {
+      return tokens.get(current + 1);
+    } catch (RuntimeError e){
+      return null;
+    }   
+  }
+
+  // private Token doublePeek() {
+  //     return tokens.get(current + 1);
+  //     throw error(doublePeek(), "Range out of index");
+  // }
 
   private Token previous() {
     return tokens.get(current - 1);
