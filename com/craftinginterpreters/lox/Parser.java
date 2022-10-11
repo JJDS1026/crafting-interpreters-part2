@@ -143,7 +143,10 @@ class Parser {
   private Stmt expressionStatement() {
     Expr expr = expression();
     consume(SEMICOLON, "Expect ';' after expression.");
-    if ((expr instanceof Expr.Variable) || (expr instanceof Expr.Literal) || (expr instanceof Expr.Binary)) {
+    if ((expr instanceof Expr.Variable) ||
+            (expr instanceof Expr.Literal) ||
+            (expr instanceof Expr.Binary) ||
+            (expr instanceof Expr.Unary)) {
       return new Stmt.Return(previous(), expr);
     }else{
       return new Stmt.Expression(expr);
