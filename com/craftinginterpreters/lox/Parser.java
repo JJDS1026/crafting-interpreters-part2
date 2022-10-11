@@ -32,7 +32,7 @@ class Parser {
     try {
       if (match(FUN)) return function("function");
       if (match(VAR)) return varDeclaration();
-      if (peek().type == IDENTIFIER && doublePeek().type == EQUAL) return clauseExpressionStatement();
+      //if (peek().type == IDENTIFIER && doublePeek().type == EQUAL) return clauseExpressionStatement();
       return statement();
     } catch (ParseError error) {
       synchronize();
@@ -59,7 +59,7 @@ class Parser {
     } else if (match(VAR)) {
       initializer = varDeclaration();
     } else {
-      initializer = clauseExpressionStatement();
+      initializer = expressionStatement();
     }
 
     Expr condition = null;
@@ -77,7 +77,7 @@ class Parser {
     Stmt body = statement();
     if (increment != null) {
       body = new Stmt.Block(
-          Arrays.asList(body, new Stmt.ClauseExpression(increment))
+          Arrays.asList(body, new Stmt.Expression(increment))
       );
     }
     if (condition == null) condition = new Expr.Literal(true);
@@ -143,14 +143,19 @@ class Parser {
   private Stmt expressionStatement() {
     Expr expr = expression();
     consume(SEMICOLON, "Expect ';' after expression.");
-    return new Stmt.Expression(expr);
+    if ((expr instanceof Expr.Variable) || (expr instanceof Expr.Literal) || (expr instanceof Expr.Binary)) {
+      return new Stmt.Return(previous(), expr);
+    }else{
+      return new Stmt.Expression(expr);
+    }
+
   }
 
-  private Stmt clauseExpressionStatement() {
-    Expr expr = expression();
-    consume(SEMICOLON, "Expect';' after expression.");
-    return new Stmt.ClauseExpression(expr);
-  }
+//  private Stmt clauseExpressionStatement() {
+//    Expr expr = expression();
+//    consume(SEMICOLON, "Expect';' after expression.");
+//    return new Stmt.ClauseExpression(expr);
+//  }
 
   private Stmt.Function function(String kind) {
     Token name = consume(IDENTIFIER, "Expect " + kind + " name.");

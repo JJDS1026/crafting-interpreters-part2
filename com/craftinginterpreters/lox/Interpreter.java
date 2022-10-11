@@ -1,6 +1,6 @@
 package com.craftinginterpreters.lox;
 
-import sun.util.resources.cldr.vai.LocaleNames_vai;
+//import sun.util.resources.cldr.vai.LocaleNames_vai;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,11 +105,12 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     return true;
   }
 
-  private Object evaluate(Expr expr) {
+  public Object evaluate(Expr expr) {
     return expr.accept(this);
   }
 
-  private void execute(Stmt stmt) {
+
+  public void execute(Stmt stmt) {
     stmt.accept(this);
   }
 
@@ -140,7 +141,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   @Override
   public Object visitBinaryExpr(Expr.Binary expr) {
     Object left = evaluate(expr.left);
-    Object right = evaluate(expr.right); 
+    Object right = evaluate(expr.right);
 
     switch (expr.operator.type) {
       case MINUS:
@@ -149,7 +150,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       case PLUS:
         if (left instanceof Double && right instanceof Double) {
           return (double)left + (double)right;
-        } 
+        }
 
         if (left instanceof String && right instanceof String) {
           return (String)left + (String)right;
@@ -240,12 +241,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
   @Override
   public Void visitExpressionStmt(Stmt.Expression stmt) {
-    Object value = null;
-    value = evaluate(stmt.expression); 
-    throw new Return(value);
-  }
-
-  public Void visitClauseExpressionStmt(Stmt.ClauseExpression stmt) {
     evaluate(stmt.expression);
     return null;
   }
@@ -257,7 +252,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     return null;
   }
 
-   @Override
+  @Override
   public Void visitIfStmt(Stmt.If stmt) {
     if (isTruthy(evaluate(stmt.condition))) {
       execute(stmt.thenBranch);
